@@ -1,0 +1,183 @@
+---
+title: "Group 5"
+author: "N. Balasubramaniam, L. Pranjic, L. Pranjic, N. Zindel"
+date: "2023-10-23"
+output:
+  pdf_document: default
+  html_document: default
+---
+# Exercise 1
+
+## Description of the data
+
+### Structure of the dataset
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+data <- read.csv("~/Downloads/loan_sample_5.csv")
+str(data)
+```
+
+```{r, identification variables, echo=FALSE, warning=FALSE, message=FALSE}
+## Identification of numeric and categorical variables
+numeric_vars <- sapply(data, is.numeric)
+
+categorical_vars <- !numeric_vars
+```
+
+### Counting the number of numeric and categorical variables
+
+```{r, counting variables, echo=TRUE, warning=FALSE, message=FALSE}
+num_numeric_vars <- sum(numeric_vars)
+num_categorical_vars <- sum(categorical_vars)
+cat("Number of numeric variables:", num_numeric_vars, "\n")
+cat("Number of categorical variables:", num_categorical_vars, "\n")
+```
+
+### Categorical variable with the most levels
+
+```{r, categorical variable with most levels, echo=FALSE, warning=FALSE, message=FALSE}
+max_levels <- 0
+max_levels_var <- ""
+for (var in names(data[categorical_vars])) {
+  num_levels <- length(unique(data[[var]]))
+  if (num_levels > max_levels) {
+    max_levels <- num_levels
+    max_levels_var <- var
+  }
+}
+
+cat("Categorical variable with the most levels:", max_levels_var, "with", max_levels, "levels", "\n")
+```
+### Summary of the variables
+
+```{r, summary variables, echo=FALSE, message=FALSE, warning=FALSE}
+summary(data)
+```
+
+###Levels of the target variable "Status"
+
+```{r, levels of status, echo=FALSE, message=FALSE, warning=FALSE}
+status_levels <- table(data$Status)
+status_levels
+is.factor(data$Status)
+is.numeric(data$Status)
+sum(is.na(data$Status))
+sum(is.infinite(data$Status))
+```
+
+### Distribution of numeric variables
+
+```{r, fig.cap= "Distribution of numeric variables", fig.height=8, fig.width=12, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+# data frame with all the numeric variables
+numeric_data <- data.frame(
+  variable1 = data$loan_amnt,
+  variable2 = data$int_rate,
+  variable3 = data$annual_inc,
+  variable4 = data$dti,
+  variable5 = data$open_acc,
+  variable6 = data$revol_bal,
+  variable7 = data$revol_util,
+  variable8 = data$total_acc,
+  variable9 = data$total_rec_int,
+  variable10 = data$tot_cur_bal,
+  variable11 = data$total_rev_hi_lim,
+  variable12 = data$Status)
+
+# Convering the data frame to long format for plotting
+library(reshape2)
+numeric_data_long <- melt(numeric_data)
+
+# Creating a matrix of density plots
+ggplot(numeric_data_long, aes(x = value, fill = variable)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~ variable, scales = "free") +
+  labs(title = "Distribution of Numeric Variables",
+       x = "Value", y = "Density") +
+  theme_minimal()
+```
+
+### Investigation wether variables contain outliers
+```{r, fig.cap= "Boxplot of loan amount", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = loan_amnt)) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Box Plot of Loan Amount", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of interest rate", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = int_rate)) +
+  geom_boxplot(fill = "pink", color = "black") +
+  labs(title = "Box Plot of Interest Rate", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of annual income", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = annual_inc)) +
+  geom_boxplot(fill = "yellow", color = "black") +
+  labs(title = "Box Plot of Annual Income", x = "", y = "Value") +
+  theme_minimal()
+```
+
+
+```{r, fig.cap= "Boxplot of dti", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = dti)) +
+  geom_boxplot(fill = "gold", color = "black") +
+  labs(title = "Box Plot of dti", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of open_acc", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = open_acc)) +
+  geom_boxplot(fill = "red", color = "black") +
+  labs(title = "Box Plot of open_acc", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of revol_bal", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = revol_bal)) +
+  geom_boxplot(fill = "blue", color = "black") +
+  labs(title = "Box Plot of revol_bal", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of revol_util", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = revol_util)) +
+  geom_boxplot(fill = "violet", color = "black") +
+  labs(title = "Box Plot of revol_util", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of total_acc", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = total_acc)) +
+  geom_boxplot(fill = "green", color = "black") +
+  labs(title = "Box Plot of total_acc", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of tot_cur_bal", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = tot_cur_bal)) +
+  geom_boxplot(fill = "orange", color = "black") +
+  labs(title = "Box Plot of tot_cur_bal", x = "", y = "Value") +
+  theme_minimal()
+```
+
+```{r, fig.cap= "Boxplot of total_rev_hi_lim", fig.height=3, fig.width=4, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(data, aes(y = total_rev_hi_lim)) +
+  geom_boxplot(fill = "darkgreen", color = "black") +
+  labs(title = "Box Plot of total_rev_hi_lim", x = "", y = "Value") +
+  theme_minimal()
+```
+
